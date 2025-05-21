@@ -58,16 +58,21 @@ class SparseMatrix:
         return result
 
     def multiply(self, other):
-        if self.num_cols != other.num_rows:
+        if self.cols != other.rows:
             raise ValueError("Matrix dimensions do not match for multiplication")
-        result = SparseMatrix(self.num_rows, other.num_cols)
-        for (r1, c1), v1 in self.data.items():
-            for c2 in range(other.num_cols):
-                v2 = other.get_element(c1, c2)
+    
+        result = SparseMatrix(self.rows, other.cols)
+    
+        # Multiply using sparse property
+        for (i, k), v1 in self.data.items():
+            for j in range(other.cols):
+                v2 = other.get_element(k, j)
                 if v2 != 0:
-                    current = result.get_element(r1, c2)
-                    result.set_element(r1, c2, current + v1 * v2)
+                    current = result.get_element(i, j)
+                    result.set_element(i, j, current + v1 * v2)
+    
         return result
+
 
     def __str__(self):
         result = f"rows={self.num_rows}\ncols={self.num_cols}\n"
